@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta property="og:title" content="Projeto Diaconisa Ivana de Oliveira Piquet">
+    <meta property="og:description" content="Doe 1kg de alimento e transforme vidas com o Projeto Diaconisa Ivana de Oliveira Piquet. Junte-se a nós na luta contra a fome e leve esperança a quem mais precisa.">
+    <meta property="og:image" content="https://i.imgur.com/9mio9ZI.jpeg">
+    <meta property="og:url" content="https://webrjpro.github.io/diaconisa_ivana/">
+    <meta property="og:type" content="website">
     <title>Projeto Diaconisa Ivana de Oliveira Piquet</title>
     
     <!-- Tailwind CSS -->
@@ -48,6 +53,7 @@
 
         .modal-overlay {
             background-color: rgba(0, 0, 0, 0.6);
+            -webkit-backdrop-filter: blur(4px);
             backdrop-filter: blur(4px);
         }
 
@@ -60,6 +66,138 @@
         }
         .animate-ping-slow {
             animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        /* Decorative pattern */
+        .decorative-pattern {
+            background-image: radial-gradient(#ea580c 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Printable flyer styles */
+        .printable-flyer {
+            display: none;
+        }
+        .printable-flyer-header {
+            text-align: center;
+            border-bottom: 2px solid #ea580c;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .printable-flyer-header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1c1917;
+            margin: 0;
+        }
+        .printable-flyer-header p {
+            font-size: 14px;
+            color: #ea580c;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .printable-flyer-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .printable-flyer-title h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1c1917;
+            line-height: 1.2;
+        }
+        .printable-flyer-title h2 span {
+            color: #ea580c;
+        }
+        .printable-flyer-title p {
+            font-size: 18px;
+            color: #444;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        .printable-flyer-needs {
+            background-color: #fafaf9;
+            border: 1px dashed #ccc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .printable-flyer-needs h3 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ea580c;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .printable-flyer-needs ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .printable-flyer-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+        .printable-flyer-footer-left {
+            flex: 1;
+        }
+        .printable-flyer-footer-left h4 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .printable-flyer-footer-left p {
+            font-size: 16px;
+            margin: 0;
+        }
+        .printable-flyer-footer-left .small-text {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+        .printable-flyer-footer-left .contact-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        .printable-flyer-footer-left .phone {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ea580c;
+            margin: 0;
+        }
+        .printable-flyer-footer-right {
+            text-align: center;
+        }
+        .printable-flyer-footer-right img {
+            width: 120px;
+            height: 120px;
+            border: 4px solid #ea580c;
+            padding: 4px;
+            border-radius: 8px;
+        }
+        .printable-flyer-footer-right p {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .printable-flyer-bottom {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            font-size: 12px;
+            color: #888;
         }
 
         /* --- ESTILOS DE IMPRESSÃO (PANFLETO) --- */
@@ -125,7 +263,7 @@
 
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-orange-600 p-2 focus:outline-none">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-orange-600 p-2 focus:outline-none" title="Abrir menu">
                         <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
                         <svg id="close-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                     </button>
@@ -295,7 +433,7 @@
     <!-- Contato / Localização -->
     <section id="contato" class="py-20 bg-stone-900 text-white relative overflow-hidden">
         <!-- Decorative pattern -->
-        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ea580c 1px, transparent 1px); background-size: 30px 30px;"></div>
+        <div class="decorative-pattern absolute inset-0 opacity-10"></div>
         
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">
@@ -324,7 +462,7 @@
                             </div>
                             <div>
                                 <h3 class="font-bold text-xl mb-1">Dúvidas? Ligue ou mande Zap</h3>
-                                <a href="https://wa.me/5521977430152" target="_blank" class="text-gray-300 hover:text-orange-400 transition-colors block text-lg font-semibold">+55 21 97743-0152</a>
+                                <a href="https://wa.me/5521977430152" target="_blank" rel="noopener" class="text-gray-300 hover:text-orange-400 transition-colors block text-lg font-semibold">+55 21 97743-0152</a>
                                 <p class="text-gray-400 text-sm mt-1">Falar com a equipe do Projeto Ivana</p>
                             </div>
                         </div>
@@ -399,22 +537,22 @@
     </div>
 
     <!-- CONTEÚDO DO PANFLETO (Visível apenas na impressão) -->
-    <div id="printable-flyer" style="display: none;">
-        <div style="text-align: center; border-bottom: 2px solid #ea580c; padding-bottom: 20px; margin-bottom: 20px;">
-            <h1 style="font-size: 24px; font-weight: bold; color: #1c1917; margin: 0;">Projeto Diaconisa Ivana de Oliveira Piquet</h1>
-            <p style="font-size: 14px; color: #ea580c; font-weight: bold; margin-top: 5px;">SOLIDARIEDADE QUE ALIMENTA</p>
+    <div id="printable-flyer" class="printable-flyer">
+        <div class="printable-flyer-header">
+            <h1>Projeto Diaconisa Ivana de Oliveira Piquet</h1>
+            <p>SOLIDARIEDADE QUE ALIMENTA</p>
         </div>
 
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="font-size: 32px; font-weight: 800; color: #1c1917; line-height: 1.2;">A fome dói.<br><span style="color: #ea580c;">Seu amor cura.</span></h2>
-            <p style="font-size: 18px; color: #444; margin-top: 15px; font-style: italic;">
+        <div class="printable-flyer-title">
+            <h2>A fome dói.<br><span>Seu amor cura.</span></h2>
+            <p>
                 "Transformamos 1kg de alimento em um gesto poderoso de esperança."
             </p>
         </div>
 
-        <div style="background-color: #fafaf9; border: 1px dashed #ccc; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
-            <h3 style="font-size: 20px; font-weight: bold; color: #ea580c; text-align: center; margin-bottom: 15px;">O QUE PRECISAMOS (1kg de amor):</h3>
-            <ul style="list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 16px; font-weight: 500;">
+        <div class="printable-flyer-needs">
+            <h3>O QUE PRECISAMOS (1kg de amor):</h3>
+            <ul>
                 <li>🍚 Arroz</li>
                 <li>🫘 Feijão</li>
                 <li>🍝 Macarrão</li>
@@ -427,23 +565,23 @@
             </ul>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
-            <div style="flex: 1;">
-                <h4 style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">📍 Onde Entregar:</h4>
-                <p style="font-size: 16px; margin: 0;">Rua da Esperança, 123 - Centro</p>
-                <p style="font-size: 14px; color: #666; margin: 0;">(Ao lado da Padaria do Sr. João)</p>
+        <div class="printable-flyer-footer">
+            <div class="printable-flyer-footer-left">
+                <h4>📍 Onde Entregar:</h4>
+                <p>Rua da Esperança, 123 - Centro</p>
+                <p class="small-text">(Ao lado da Padaria do Sr. João)</p>
                 
-                <h4 style="font-size: 18px; font-weight: bold; margin-top: 20px; margin-bottom: 5px;">📞 WhatsApp / Pix:</h4>
-                <p style="font-size: 22px; font-weight: bold; color: #ea580c; margin: 0;">(21) 97743-0152</p>
+                <h4 class="contact-header">📞 WhatsApp / Pix:</h4>
+                <p class="phone">(21) 97743-0152</p>
             </div>
             
-            <div style="text-align: center;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/5521977430152" alt="QR Code WhatsApp" style="width: 120px; height: 120px; border: 4px solid #ea580c; padding: 4px; border-radius: 8px;">
-                <p style="font-size: 12px; font-weight: bold; margin-top: 5px;">Escaneie para falar</p>
+            <div class="printable-flyer-footer-right">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/5521977430152" alt="QR Code WhatsApp">
+                <p>Escaneie para falar</p>
             </div>
         </div>
 
-        <div style="position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center; border-top: 1px solid #eee; padding-top: 10px; font-size: 12px; color: #888;">
+        <div class="printable-flyer-bottom">
             Deus abençoe sua generosidade. | Projeto Diaconisa Ivana
         </div>
     </div>
