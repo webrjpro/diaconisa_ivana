@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Diaconisa Ivana de Oliveira Piquet</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        stone: {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            800: '#292524',
+                            900: '#1c1917',
+                            950: '#0c0a09',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles & Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Ping animation for button */
+        @keyframes ping-slow {
+            75%, 100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        .animate-ping-slow {
+            animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        /* --- ESTILOS DE IMPRESSÃO (PANFLETO) --- */
+        @media print {
+            /* Esconde tudo que é do site normal */
+            nav, section, footer, .modal-overlay, #pledge-modal, #mobile-menu-btn {
+                display: none !important;
+            }
+            
+            /* Remove background colors e sombras do body */
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            /* Mostra e estiliza o Panfleto */
+            #printable-flyer {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                background: white;
+                padding: 20px;
+            }
+
+            /* Garante que cores de fundo (como nos ícones) apareçam na impressão (se o navegador permitir) */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-stone-50 overflow-x-hidden selection:bg-orange-200 selection:text-orange-900">
+
+    <!-- Navegação -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                        P
+                    </div>
+                    <span class="font-bold text-xl tracking-tight text-gray-900">
+                        Projeto <span class="text-orange-600">Ivana de Oliveira Piquet</span>
+                    </span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#historia" class="text-gray-600 hover:text-orange-600 font-medium transition-colors">Nossa Missão</a>
+                    <a href="#como-ajudar" class="text-gray-600 hover:text-orange-600 font-medium transition-colors">O Que Doar</a>
+                    <a href="#contato" class="text-gray-600 hover:text-orange-600 font-medium transition-colors">Onde Entregar</a>
+                    <a href="#como-ajudar" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2.5 rounded-full font-bold shadow-lg hover:shadow-orange-500/30 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                        Quero Ajudar
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-orange-600 p-2 focus:outline-none">
+                        <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                        <svg id="close-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 overflow-hidden transition-all duration-300">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#historia" class="block w-full text-left px-3 py-4 text-base font-medium text-gray-600 border-b border-gray-100 mobile-link">Nossa Missão</a>
+                <a href="#como-ajudar" class="block w-full text-left px-3 py-4 text-base font-medium text-gray-600 border-b border-gray-100 mobile-link">O Que Doar</a>
+                <a href="#contato" class="block w-full text-left px-3 py-4 text-base font-medium text-gray-600 border-b border-gray-100 mobile-link">Onde Entregar</a>
+                <a href="#como-ajudar" class="block w-full mt-4 bg-orange-600 text-white px-3 py-4 rounded-xl font-bold text-center shadow-md mobile-link">
+                    Quero Ajudar Agora
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="absolute inset-0 bg-stone-900">
+           <!-- Imagem de fundo -->
+           <img 
+            src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" 
+            alt="Mãos segurando alimento" 
+            class="w-full h-full object-cover opacity-30"
+            onerror="this.src='https://placehold.co/1920x1080/292524/FFF?text=Imagem+Fundo'"
+          />
+          <div class="absolute inset-0 bg-gradient-to-b from-stone-900/50 via-stone-900/20 to-stone-50"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center fade-in-up">
+            <span class="inline-block py-1 px-3 rounded-full bg-orange-100/10 border border-orange-500/30 text-orange-400 font-semibold tracking-wide text-sm mb-6 backdrop-blur-sm">
+              SOLIDARIEDADE QUE ALIMENTA
+            </span>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight">
+              A fome dói.<br/>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-600">
+                Seu amor cura.
+              </span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-300 leading-relaxed mb-10">
+              Imagine não ter o que colocar na mesa hoje. Para muitas famílias, isso é realidade.
+              No Projeto <strong class="text-white">Diaconisa Ivana de Oliveira Piquet</strong>, 
+              transformamos 1kg de alimento em um gesto poderoso de esperança.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+              <a href="#como-ajudar" class="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white rounded-full font-bold text-lg shadow-xl shadow-orange-900/20 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                Vou doar 1kg de alimento 
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+              <a href="#historia" class="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 rounded-full font-semibold text-lg transition-all flex items-center justify-center">
+                Conhecer a História
+              </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contador de Impacto (Social Proof) -->
+    <div class="bg-white py-8 border-b border-stone-100 shadow-sm relative z-10 -mt-8 mx-4 md:mx-auto max-w-5xl rounded-2xl fade-in-up">
+        <div class="flex flex-col md:flex-row justify-around items-center text-center gap-6 px-6">
+          <div>
+            <div class="text-4xl font-bold text-orange-600" id="counter">124</div>
+            <div class="text-sm font-medium text-gray-500 uppercase tracking-wide mt-1">Pessoas já se comprometeram</div>
+          </div>
+          <div class="hidden md:block w-px h-12 bg-gray-100"></div>
+          <div>
+            <div class="text-4xl font-bold text-stone-800">50+</div>
+            <div class="text-sm font-medium text-gray-500 uppercase tracking-wide mt-1">Cestas Entregues este mês</div>
+          </div>
+          <div class="hidden md:block w-px h-12 bg-gray-100"></div>
+          <div>
+            <div class="text-4xl font-bold text-stone-800">100%</div>
+            <div class="text-sm font-medium text-gray-500 uppercase tracking-wide mt-1">Doado para quem precisa</div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Seção Sobre / Empatia -->
+    <section id="historia" class="py-20 lg:py-28 bg-stone-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="relative fade-in-up">
+              <div class="absolute -top-4 -left-4 w-24 h-24 bg-orange-100 rounded-full -z-10"></div>
+              <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-amber-100 rounded-full -z-10"></div>
+              <img 
+                src="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop" 
+                alt="Comunidade unida" 
+                class="rounded-2xl shadow-2xl w-full h-auto object-cover transform rotate-1 hover:rotate-0 transition-all duration-500"
+                onerror="this.src='https://placehold.co/800x600/e7e5e4/a8a29e?text=Foto+Comunidade'"
+              />
+              <div class="absolute bottom-6 left-6 bg-white/95 backdrop-blur px-6 py-4 rounded-xl shadow-lg border-l-4 border-orange-600">
+                <p class="font-serif italic text-lg text-gray-700">"Quem tem fome, tem pressa."</p>
+                <p class="text-sm text-gray-500 font-bold mt-1">- Herbert de Souza (Betinho)</p>
+              </div>
+            </div>
+
+            <div class="fade-in-up">
+              <h2 class="text-3xl md:text-4xl font-bold text-stone-900 mb-6">
+                O Legado de <span class="text-orange-600">Diaconisa Ivana</span>
+              </h2>
+              <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                Este projeto nasce de um coração que nunca aceitou ver o próximo sofrer. 
+                A Diaconisa Ivana de Oliveira Piquet nos ensinou que a fé sem obras é morta, 
+                e que o verdadeiro culto é estender a mão a quem caiu.
+              </p>
+              <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                Hoje, continuamos essa missão. Não pedimos grandes fortunas. Pedimos o que 
+                está ao seu alcance. Um quilo de arroz, um pacote de feijão... itens que 
+                podem parecer pouco na sua despensa, mas que garantem a sobrevivência de uma família inteira por dias.
+              </p>
+              
+              <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h3 className="font-bold text-xl text-stone-800 mb-4 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><path d="M2 21h20"/><path d="m2 10 10-5 10 5-10 5z"/><path d="m12 10v11"/><path d="m7 5-5 5"/><path d="m17 5 5 5"/></svg>
+                  Por que 1kg?
+                </h3>
+                <p class="text-gray-600">
+                  Porque 1kg é acessível para quase todos. Se 30 pessoas doarem 1kg, 
+                  montamos cestas completas que sustentam vidas. É a multiplicação dos pães acontecendo hoje, através de você.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <!-- Como Ajudar / Lista de Itens -->
+    <section id="como-ajudar" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <span class="text-orange-600 font-semibold tracking-wider uppercase text-sm">Sua contribuição importa</span>
+                <h2 class="text-3xl md:text-5xl font-bold text-stone-900 mt-2">O que precisamos?</h2>
+                <p class="mt-4 text-xl text-gray-500 max-w-2xl mx-auto">
+                Traga apenas 1kg de qualquer alimento não perecível da lista abaixo. 
+                Pode ser de qualquer marca. O amor é o mesmo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="items-grid">
+                <!-- Itens serão gerados via JS -->
+            </div>
+
+            <!-- Botão de Comprometimento -->
+            <div class="mt-16 text-center bg-orange-50 rounded-3xl p-8 md:p-12 max-w-4xl mx-auto border border-orange-100 fade-in-up">
+                <h3 class="text-2xl md:text-3xl font-bold text-stone-900 mb-4">
+                Posso contar com você?
+                </h3>
+                <p class="text-gray-600 mb-8 text-lg">
+                Clique abaixo para dizer "Eu vou doar". Isso nos motiva e incentiva outros a fazerem o mesmo!
+                </p>
+                <button onclick="handlePledge()" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-orange-600 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 hover:bg-orange-700 cursor-pointer">
+                    <span class="absolute -right-8 -top-8 animate-ping-slow w-4 h-4 rounded-full bg-orange-400 opacity-75"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    Eu vou levar 1kg!
+                </button>
+                <p class="mt-4 text-sm text-orange-700/60 font-medium">
+                Não precisa se cadastrar, é apenas um gesto simbólico.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato / Localização -->
+    <section id="contato" class="py-20 bg-stone-900 text-white relative overflow-hidden">
+        <!-- Decorative pattern -->
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ea580c 1px, transparent 1px); background-size: 30px 30px;"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">
+                <div class="fade-in-up">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Onde Entregar?</h2>
+                    <p class="text-gray-400 text-lg mb-8">
+                        Temos pontos de coleta prontos para receber sua doação com um sorriso no rosto e gratidão no coração.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xl mb-1">Ponto de Coleta Principal</h3>
+                                <p class="text-gray-300">Rua da Esperança, 123 - Centro</p>
+                                <p class="text-gray-400 text-sm mt-1">Ao lado da Padaria do Sr. João</p>
+                                <p class="text-orange-400 text-sm mt-2 font-medium">Seg a Sex: 08h às 18h</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xl mb-1">Dúvidas? Ligue ou mande Zap</h3>
+                                <a href="https://wa.me/5521977430152" target="_blank" class="text-gray-300 hover:text-orange-400 transition-colors block text-lg font-semibold">+55 21 97743-0152</a>
+                                <p class="text-gray-400 text-sm mt-1">Falar com a equipe do Projeto Ivana</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 flex flex-wrap gap-4">
+                        <button onclick="shareProject()" class="flex items-center gap-2 text-white/80 hover:text-white transition-colors border-b border-white/20 pb-1 hover:border-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+                            Compartilhar Site
+                        </button>
+                        
+                        <!-- BOTÃO IMPRIMIR PANFLETO -->
+                        <button onclick="window.print()" class="flex items-center gap-2 text-orange-400 hover:text-orange-300 transition-colors border-b border-orange-400/20 pb-1 hover:border-orange-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                            Imprimir Panfleto
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-stone-800 p-8 rounded-2xl border border-stone-700 fade-in-up">
+                    <h3 class="text-2xl font-bold mb-6 text-orange-500">Não pode ir até lá?</h3>
+                    <p class="text-gray-300 mb-6">
+                        Se você quer ajudar mas não consegue levar o alimento físico, entre em contato. 
+                        Podemos buscar em grandes quantidades ou aceitamos ajuda para a compra dos itens no atacado.
+                    </p>
+                    <form class="space-y-4" onsubmit="event.preventDefault(); window.open('https://wa.me/5521977430152?text=Olá, quero ajudar o Projeto Ivana!', '_blank')">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Seu Nome</label>
+                            <input type="text" class="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors" placeholder="João da Silva" required />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Seu WhatsApp</label>
+                            <input type="tel" class="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors" placeholder="(21) 99999-9999" required />
+                        </div>
+                        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                            Falar no WhatsApp
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-stone-950 py-8 text-center text-stone-500 text-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="mb-2">© 2024 Projeto Diaconisa Ivana de Oliveira Piquet. Todos os direitos reservados.</p>
+            <p>Feito com amor e solidariedade.</p>
+        </div>
+    </footer>
+
+    <!-- Modal de Agradecimento (MENSAGEM BÍBLICA ATUALIZADA) -->
+    <div id="pledge-modal" class="fixed inset-0 z-[60] flex items-center justify-center px-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="bg-white rounded-2xl p-8 max-w-sm w-full relative z-10 text-center shadow-2xl transform scale-90 transition-transform duration-300" id="modal-content">
+            <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </div>
+            
+            <h3 class="text-xl font-bold text-stone-900 mb-4">Deus se alegra com sua oferta!</h3>
+            
+            <blockquote class="text-lg italic text-gray-600 font-serif border-l-4 border-orange-400 pl-4 py-2 mb-6 bg-orange-50/50 rounded-r-lg text-left">
+                "O generoso será abençoado, porque reparte o seu pão com o pobre."
+                <footer class="text-sm font-sans font-bold text-orange-600 mt-2 not-italic">— Provérbios 22:9</footer>
+            </blockquote>
+
+            <div class="flex items-center justify-center gap-2 text-sm text-green-600 font-semibold animate-pulse">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                Abrindo WhatsApp em instantes...
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO DO PANFLETO (Visível apenas na impressão) -->
+    <div id="printable-flyer" style="display: none;">
+        <div style="text-align: center; border-bottom: 2px solid #ea580c; padding-bottom: 20px; margin-bottom: 20px;">
+            <h1 style="font-size: 24px; font-weight: bold; color: #1c1917; margin: 0;">Projeto Diaconisa Ivana de Oliveira Piquet</h1>
+            <p style="font-size: 14px; color: #ea580c; font-weight: bold; margin-top: 5px;">SOLIDARIEDADE QUE ALIMENTA</p>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="font-size: 32px; font-weight: 800; color: #1c1917; line-height: 1.2;">A fome dói.<br><span style="color: #ea580c;">Seu amor cura.</span></h2>
+            <p style="font-size: 18px; color: #444; margin-top: 15px; font-style: italic;">
+                "Transformamos 1kg de alimento em um gesto poderoso de esperança."
+            </p>
+        </div>
+
+        <div style="background-color: #fafaf9; border: 1px dashed #ccc; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+            <h3 style="font-size: 20px; font-weight: bold; color: #ea580c; text-align: center; margin-bottom: 15px;">O QUE PRECISAMOS (1kg de amor):</h3>
+            <ul style="list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 16px; font-weight: 500;">
+                <li>🍚 Arroz</li>
+                <li>🫘 Feijão</li>
+                <li>🍝 Macarrão</li>
+                <li>🌻 Óleo</li>
+                <li>🍬 Açúcar</li>
+                <li>☕ Café</li>
+                <li>🌾 Farinha</li>
+                <li>🥛 Leite em Pó</li>
+                <li>🎁 Outros (Qualquer alimento)</li>
+            </ul>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+            <div style="flex: 1;">
+                <h4 style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">📍 Onde Entregar:</h4>
+                <p style="font-size: 16px; margin: 0;">Rua da Esperança, 123 - Centro</p>
+                <p style="font-size: 14px; color: #666; margin: 0;">(Ao lado da Padaria do Sr. João)</p>
+                
+                <h4 style="font-size: 18px; font-weight: bold; margin-top: 20px; margin-bottom: 5px;">📞 WhatsApp / Pix:</h4>
+                <p style="font-size: 22px; font-weight: bold; color: #ea580c; margin: 0;">(21) 97743-0152</p>
+            </div>
+            
+            <div style="text-align: center;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/5521977430152" alt="QR Code WhatsApp" style="width: 120px; height: 120px; border: 4px solid #ea580c; padding: 4px; border-radius: 8px;">
+                <p style="font-size: 12px; font-weight: bold; margin-top: 5px;">Escaneie para falar</p>
+            </div>
+        </div>
+
+        <div style="position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center; border-top: 1px solid #eee; padding-top: 10px; font-size: 12px; color: #888;">
+            Deus abençoe sua generosidade. | Projeto Diaconisa Ivana
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Dados dos itens (ADICIONADO "OUTROS")
+        const items = [
+            { name: "Arroz", icon: "🍚", weight: "1kg ou 5kg" },
+            { name: "Feijão", icon: "🫘", weight: "1kg" },
+            { name: "Macarrão", icon: "🍝", weight: "500g" },
+            { name: "Óleo", icon: "🌻", weight: "900ml" },
+            { name: "Açúcar", icon: "🍬", weight: "1kg" },
+            { name: "Café", icon: "☕", weight: "250g ou 500g" },
+            { name: "Farinha", icon: "🌾", weight: "1kg" },
+            { name: "Leite em Pó", icon: "🥛", weight: "400g" },
+            { name: "Outros", icon: "🎁", weight: "O que puder" },
+        ];
+
+        // Renderizar itens
+        const grid = document.getElementById('items-grid');
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = "bg-stone-50 border border-stone-100 rounded-2xl p-6 text-center hover:shadow-lg hover:border-orange-200 transition-all group fade-in-up";
+            div.innerHTML = `
+                <div class="w-14 h-14 mx-auto bg-white rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:bg-orange-100 transition-colors">
+                    <span class="text-2xl">${item.icon}</span>
+                </div>
+                <h3 class="font-bold text-stone-800 text-lg mb-1">${item.name}</h3>
+                <p class="text-sm text-gray-500">${item.weight}</p>
+            `;
+            grid.appendChild(div);
+        });
+
+        // Menu Mobile Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                menu.classList.remove('hidden');
+                menuIcon.classList.add('hidden');
+                closeIcon.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            }
+        }
+
+        btn.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+        // Contador Lógica
+        let count = 124;
+        const counterEl = document.getElementById('counter');
+        
+        setTimeout(() => {
+            const interval = setInterval(() => {
+                if (count < 125) {
+                    count++;
+                    counterEl.innerText = count;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 50);
+        }, 1000);
+
+        // Modal Logic & Redirecionamento Automático
+        function handlePledge() {
+            count++;
+            counterEl.innerText = count;
+            
+            const modal = document.getElementById('pledge-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-90');
+            modalContent.classList.add('scale-100');
+
+            // Timer para redirecionar para o WhatsApp (4 segundos)
+            setTimeout(() => {
+                window.location.href = "https://wa.me/5521977430152?text=Olá! Deus tocou meu coração e quero ajudar com 1kg de alimento.";
+                // Fecha o modal logo depois para se o usuário voltar
+                setTimeout(closeModal, 1000);
+            }, 4000);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('pledge-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-90');
+        }
+
+        // Animação de Scroll (Intersection Observer)
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Share Functionality
+        function shareProject() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Projeto Diaconisa Ivana',
+                    text: 'Conheça o projeto que troca 1kg de alimento por esperança. Vamos ajudar?',
+                    url: window.location.href,
+                })
+                .catch((error) => console.log('Erro ao compartilhar', error));
+            } else {
+                alert('Copie o link desta página e mande para seus amigos!');
+            }
+        }
+    </script>
+</body>
+</html>
